@@ -5,14 +5,6 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Install dependencies based on the preferred package manager
-COPY package.json pnpm-lock.yaml* ./
-RUN corepack enable pnpm && pnpm i --frozen-lockfile
-
-# Rebuild the source code only when needed
-FROM base AS builder
-WORKDIR /app
-
 # Copy package files
 COPY package.json pnpm-lock.yaml* ./
 COPY packages/ ./packages/
@@ -20,6 +12,13 @@ COPY apps/web/ ./apps/web/
 
 # Install all dependencies including dev dependencies for building
 RUN corepack enable pnpm && pnpm install --frozen-lockfile
+
+# Rebuild the source code only when needed
+FROM base AS builder
+WORKDIR /app
+
+# Copy everything from deps stage
+COPY --from=deps /app ./
 
 # Build the application
 RUN pnpm run build
