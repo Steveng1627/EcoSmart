@@ -36,10 +36,11 @@ jobs:
     - name: Build
       run: pnpm run build
 
+  # Docker build and push (only when Docker Hub credentials are available)
   docker:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && secrets.DOCKER_USERNAME != ''
     
     steps:
     - uses: actions/checkout@v4
@@ -73,8 +74,18 @@ jobs:
           ${{ secrets.DOCKER_USERNAME }}/ecosmart-web:latest
           ${{ secrets.DOCKER_USERNAME }}/ecosmart-web:${{ github.sha }}
 
+  # Skip Docker when no credentials are available
+  docker-skip:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && secrets.DOCKER_USERNAME == ''
+    
+    steps:
+    - name: Skip Docker build
+      run: echo "Docker Hub credentials not configured. Skipping Docker build and push."
+
   deploy:
-    needs: docker
+    needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     
