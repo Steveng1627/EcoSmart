@@ -12,11 +12,17 @@ RUN corepack enable pnpm && pnpm i --frozen-lockfile
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+
+# Copy package files
+COPY package.json pnpm-lock.yaml* ./
+COPY packages/ ./packages/
+COPY apps/gateway/ ./apps/gateway/
+
+# Install all dependencies including dev dependencies for building
+RUN corepack enable pnpm && pnpm install --frozen-lockfile
 
 # Build the application
-RUN corepack enable pnpm && pnpm run build
+RUN pnpm run build
 
 # Production image, copy all the files and run the app
 FROM base AS runner
