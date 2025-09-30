@@ -1,0 +1,14 @@
+{
+  "extends": "./packages/config/tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@ecosmart/types": ["packages/types/src"],
+      "@ecosmart/ui": ["packages/ui/src"],
+      "@ecosmart/config": ["packages/config/src"],
+      "@ecosmart/utils": ["packages/utils/src"]
+    }
+  },
+  "include": ["apps", "packages", "scripts", "infra"],
+  "exclude": ["node_modules", "dist", "build"]
+}

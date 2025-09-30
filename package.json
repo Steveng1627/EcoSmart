@@ -1,0 +1,23 @@
+{
+  "name": "ecosmart",
+  "private": true,
+  "version": "0.1.0",
+  "description": "EcoSmart green last-mile logistics platform monorepo",
+  "scripts": {
+    "setup": "pnpm install",
+    "check": "node scripts/check-versions.js",
+    "dev": "pnpm -r --parallel run dev",
+    "build": "pnpm -r run build",
+    "lint": "pnpm -r run lint",
+    "test": "pnpm -r run test",
+    "e2e": "pnpm --filter apps/web run test:e2e",
+    "seed": "pnpm --filter apps/gateway run seed",
+    "compose:up": "docker compose up -d --build",
+    "compose:down": "docker compose down",
+    "release": "./infra/scripts/release.sh"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=7.0.0"
+  }
+}
